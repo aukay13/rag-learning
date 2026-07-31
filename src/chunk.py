@@ -129,11 +129,17 @@ def chunk_document(text: str, source: str) -> list[dict[str, Any]]:
     return chunks
 
 
+def chunk_file(path: str | Path, source: str | None = None) -> list[dict[str, Any]]:
+    """Read a markdown file and chunk it. `source` defaults to the given path."""
+    p = Path(path)
+    text = p.read_text(encoding="utf-8")
+    return chunk_document(text, source or str(p))
+
+
 def _run() -> None:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
-    text = DOC_PATH.read_text(encoding="utf-8")
-    chunks = chunk_document(text, SOURCE)
+    chunks = chunk_file(DOC_PATH, source=SOURCE)
 
     for i, chunk in enumerate(chunks):
         content = chunk["content"]
